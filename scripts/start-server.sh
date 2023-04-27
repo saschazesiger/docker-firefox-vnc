@@ -63,4 +63,5 @@ cd /firefox
 ls
 echo "---Starting Firefox---"
 cd ${DATA_DIR}
+ls
 ${DATA_DIR}/firefox --display=:99 --profile ${DATA_DIR}/profile --P ${USER} --setDefaultBrowser ${EXTRA_PARAMETERS}

@@ -59,7 +59,7 @@ sleep 2
 echo "---Starting noVNC server---"
 websockify -D --web=/usr/share/novnc/ --cert=/etc/ssl/novnc.pem ${NOVNC_PORT} localhost:${RFB_PORT}
 sleep 2
-
+ls
 echo "---Starting Firefox---"
 cd ${DATA_DIR}
 ${DATA_DIR}/firefox --display=:99 --profile ${DATA_DIR}/profile --P ${USER} --setDefaultBrowser ${EXTRA_PARAMETERS}

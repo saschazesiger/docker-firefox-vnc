@@ -2,53 +2,6 @@
 export DISPLAY=:99
 export XAUTHORITY=${DATA_DIR}/.Xauthority
 
-CUR_V="$(${DATA_DIR}/firefox --version 2>/dev/null | cut -d ' ' -f3)"
-if [ -z "$CUR_V" ]; then
-	if [ "${FIREFOX_V}" == "latest" ]; then
-		LAT_V="108.0.1"
-	else
-		LAT_V="$FIREFOX_V"
-	fi
-else
-	if [ "${FIREFOX_V}" == "latest" ]; then
-		LAT_V="$CUR_V"
-		if [ -z "$LAT_V" ]; then
-			echo "Something went horribly wrong with version detection, putting container into sleep mode..."
-			sleep infinity
-		fi
-	else
-		LAT_V="$FIREFOX_V"
-	fi
-fi
-
-rm ${DATA_DIR}/Firefox-*.tar.bz2 2>/dev/null
-
-if [ -z "$CUR_V" ]; then
-	echo "---Firefox not installed, installing---"
-	cd ${DATA_DIR}
-	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2 "https://download.mozilla.org/?product=firefox-${FIREFOX_V}&os=linux64&lang=${FIREFOX_LANG}" ; then
-		echo "---Sucessfully downloaded Firefox---"
-	else
-		echo "---Something went wrong, can't download Firefox, putting container in sleep mode---"
-		sleep infinity
-	fi
-	tar -C ${DATA_DIR} --strip-components=1 -xf ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2
-	rm -R ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2
-elif [ "$CUR_V" != "$LAT_V" ]; then
-	echo "---Version missmatch, installed v$CUR_V, downloading and installing latest v$LAT_V...---"
-    cd ${DATA_DIR}
-	find . -maxdepth 1 ! -name profile ! -name .vnc -exec rm -rf {} \; 2>/dev/null
-	if wget -q -nc --show-progress --progress=bar:force:noscroll -O ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2 "https://download.mozilla.org/?product=firefox-${FIREFOX_V}&os=linux64&lang=${FIREFOX_LANG}" ; then
-		echo "---Sucessfully downloaded Firefox---"
-	else
-		echo "---Something went wrong, can't download Firefox, putting container in sleep mode---"
-		sleep infinity
-	fi
-	tar -C ${DATA_DIR} --strip-components=1 -xf ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2
-	rm -R ${DATA_DIR}/Firefox-$LAT_V-$FIREFOX_LANG.tar.bz2
-#elif [ "$CUR_V" == "$LAT_V" ]; then
-#	echo "---Firefox v$CUR_V up-to-date---"
-fi
 
 echo "---Preparing Server---"
 if [ ! -d ${DATA_DIR}/profile ]; then

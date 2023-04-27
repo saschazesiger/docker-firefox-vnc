@@ -36,12 +36,11 @@ RUN mkdir $DATA_DIR && \
 	ulimit -n 2048
 
 ADD /scripts/ /opt/scripts/
-COPY /icons/* /usr/share/novnc/app/images/icons/
 COPY /conf/ /etc/.fluxbox/
-COPY /config/ /tmp/config/
 RUN chmod -R 770 /opt/scripts/
+RUN /opt/scripts/start-container.sh
 
-EXPOSE 8080
+EXPOSE 5900
 
 #Server Start
 ENTRYPOINT ["/opt/scripts/start.sh"]

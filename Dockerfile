@@ -1,46 +1,21 @@
-FROM ich777/novnc-baseimage
+FROM j4n11s/base-vnc
 
-LABEL org.opencontainers.image.authors="admin@minenet.at"
-LABEL org.opencontainers.image.source="https://github.com/ich777/docker-firefox"
+LABEL org.opencontainers.image.authors="janis@js0.ch"
+LABEL org.opencontainers.image.source="https://github.com/saschazesiger/"
 
-RUN export TZ=Europe/Rome && \
-	apt-get update && \
-	apt-get -y install --no-install-recommends bzip2 libgtk-3-0 libdbus-glib-1-2 fonts-takao fonts-arphic-uming fonts-noto-cjk libasound2 ffmpeg && \
-	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
-	echo $TZ > /etc/timezone && \
-	echo "ko_KR.UTF-8 UTF-8" >> /etc/locale.gen && \ 
-	echo "ja_JP.UTF-8 UTF-8" >> /etc/locale.gen && \
-	locale-gen && \
-	rm -rf /var/lib/apt/lists/* && \
-	sed -i '/    document.title =/c\    document.title = "Firefox - noVNC";' /usr/share/novnc/app/ui.js && \
-	rm /usr/share/novnc/app/images/icons/*
+ENV URL=https://browser.lol/redirect-url-to
 
-ENV DATA_DIR=/firefox
-ENV CUSTOM_RES_W=1024
-ENV CUSTOM_RES_H=768
-ENV CUSTOM_DEPTH=16
-ENV NOVNC_PORT=8080
-ENV RFB_PORT=5900
-ENV TURBOVNC_PARAMS="-securitytypes none"
-ENV FIREFOX_LANG="en-US"
-ENV UMASK=000
-ENV UID=99
-ENV GID=100
-ENV DATA_PERM=770
-ENV USER="firefox"
+COPY /scripts /opt/scripts
 
-RUN mkdir $DATA_DIR && \
-	useradd -d $DATA_DIR -s /bin/bash $USER && \
-	chown -R $USER $DATA_DIR && \
-	mkdir -p /tmp/config && \
-	ulimit -n 2048
+RUN apt-get update && \
+	apt-get -y install --no-install-recommends bzip2 fonts-takao fonts-arphic-uming libgtk-3-0 libgconf-2-4 libnss3 fonts-liberation libasound2 libcurl3-gnutls libcurl3-nss libcurl4 libgbm1 libnspr4 libnss3 libu2f-udev xdg-utils
 
-ADD /scripts/ /opt/scripts/
-COPY /conf/ /etc/.fluxbox/
-RUN chmod -R 770 /opt/scripts/
-RUN /opt/scripts/start-container.sh
+RUN mkdir /firefox && \
+	cd /firefox && \
+	wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/112.0.2/linux-x86_64/en-US/firefox-112.0.2.tar.bz2 -O ./firefox.tar.bz2 && \
+	tar xvf firefox.tar.bz2 && \
+	rm -R ./firefox.tar.bz2
 
-EXPOSE 5900
 
 #Server Start
-ENTRYPOINT ["/opt/scripts/start.sh"]
+CMD ["bash", "/opt/scripts/start.sh"]

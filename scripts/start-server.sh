@@ -26,4 +26,12 @@ screen -d -m env HOME=/etc /usr/bin/fluxbox
 
 echo "---Starting Chrome---"
 cd /browser
-/firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser
+
+while true
+do
+  /firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser --new-instance >/dev/null &
+  while pgrep -x "firefox" > /dev/null
+  do
+    sleep 1
+  done
+done

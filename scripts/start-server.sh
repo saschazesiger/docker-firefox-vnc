@@ -29,7 +29,8 @@ cd /browser
 
 while true
 do
-  /firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser --new-instance >/dev/null &
+  trickle -d 15000 -u 15000 /firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser --new-instance >/dev/null &
+  sleep 5
   while pgrep -x "firefox" > /dev/null
   do
     sleep 1

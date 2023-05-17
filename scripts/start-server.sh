@@ -27,12 +27,6 @@ screen -d -m env HOME=/etc /usr/bin/fluxbox
 echo "---Starting Chrome---"
 cd /browser
 
-while true
-do
-  trickle -d 15000 -u 15000 /firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser --new-instance >/dev/null &
-  sleep 5
-  while pgrep -x "firefox" > /dev/null
-  do
-    sleep 1
-  done
+while true; do
+    trickle -d 15000 -u 15000 /firefox/firefox ${URL} --display=:99 --profile /browser --P browser --setDefaultBrowser --new-instance >/dev/null
 done
